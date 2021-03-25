@@ -8,26 +8,42 @@ import os
 import zipfile
 from tensorflow import keras
 
-batch_size = 128
+batch_size = 32
 img_height = 150
 img_width = 150
-TRAINING_DIR = "C:/Users/Charlie/Documents/Projects/AI-Image-Recognition/Image Recognition/Main/Data/train"
 
-VALIDATION_DIR = "C:/Users/Charlie/Documents/Projects/AI-Image-Recognition/Image Recognition/Main/Data/validation"
+TRAINING_DIR = os.path.join(os.getcwd(), "Data\\3Categories\\train")
+
+VALIDATION_DIR = os.path.join(os.getcwd(), "Data\\3Categories\\validation")
+
+TEST_DIR = os.path.join(os.getcwd(), "Data\\3Categories\\test")
 
 
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(
     TRAINING_DIR,
     seed=123,
-    image_size=(img_width,img_height),
+    image_size=(img_width, img_height),
     batch_size=batch_size
 )
 val_ds = tf.keras.preprocessing.image_dataset_from_directory(
     VALIDATION_DIR,
     seed=123,
-    image_size=(img_width,img_height),
+    image_size=(img_width, img_height),
     batch_size=batch_size
 )
+test_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    TEST_DIR,
+    seed=123,
+    image_size=(img_width, img_height),
+    batch_size=batch_size
+)
+# normalization layer
+normalization_layer = tf.keras.Sequential([
+    tf.keras.layers.experimental.preprocessing.Resizing(150, 150),
+    tf.keras.layers.experimental.preprocessing.Rescaling(1. / 255)
+])
+
+
 
 
 class_names = train_ds.class_names
@@ -37,6 +53,7 @@ AUTOTUNE = tf.data.experimental.AUTOTUNE
 
 train_ds = train_ds.cache().shuffle(1000).prefetch(AUTOTUNE)
 val_ds = val_ds.cache().prefetch(AUTOTUNE)
+test_ds = test_ds.map(lambda x, y: (normalization_layer(x), y))
 
 data_augmentation = keras.Sequential(
     [
@@ -73,7 +90,7 @@ model.compile(loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=Tru
               optimizer='adam',
               metrics=['accuracy'])
 
-history = model.fit(train_ds, epochs=100,
+history = model.fit(train_ds, epochs=5,
                               validation_data=val_ds)
 
 model.save("firstModelAction.h5")

@@ -31,11 +31,9 @@ num_classes = 0
 dataset = []
 labels = []
 
-
-# load directories previously split with splitfolders
-train_dir = "C:/Users/Charlie/Documents/Projects/AI-Image-Recognition/Image Recognition/Main/Data - Copy/train"
-val_dir = "C:/Users/Charlie/Documents/Projects/AI-Image-Recognition/Image Recognition/Main/Data - Copy/validation"
-test_dir = "C:/Users/Charlie/Documents/Projects/AI-Image-Recognition/Image Recognition/Main/Data - Copy/test"
+train_dir = os.path.join(os.getcwd(), "Data\\3Categories\\train")
+val_dir = os.path.join(os.getcwd(), "Data\\3Categories\\validation")
+test_dir = os.path.join(os.getcwd(), "Data\\3Categories\\test")
 
 
 # training dataset
@@ -135,7 +133,7 @@ model.compile(
 
 # store history in the variable for future plotting
 # there is a callback to the class at the start to see how the model is doing for each batch
-epochs = 50
+epochs = 25
 
 history = model.fit(train_ds, epochs=epochs,
                     validation_data=val_ds,
