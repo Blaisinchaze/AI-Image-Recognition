@@ -116,3 +116,14 @@ plt.legend(loc=0)
 plt.figure()
 
 plt.show()
+
+# Evaluate the model on the test data using `evaluate`
+print("Evaluate on test data")
+results = model.evaluate(test_ds, batch_size=128)
+print("test loss, test acc:", results)
+
+# Generate predictions (probabilities -- the output of the last layer)
+# on new data using `predict`
+print("Generate predictions for 3 samples")
+predictions = model.predict(test_ds[:3])
+print("predictions shape:", predictions.shape)
